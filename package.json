@@ -1,0 +1,7 @@
+{
+  "name": "jx-repo",
+  "private": true,
+  "devDependencies": {
+    "lerna": "^2.8.0"
+  }
+}
