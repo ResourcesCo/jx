@@ -80,15 +80,28 @@ Lisp.
 
 ### Can I use this without so many dollar signs?
 
-Yes. A function can take .
+Yes. A function can make its own DSL that takes plain JSON, and evaluate
+it in its own context and with its own permissions (no using $ref in a
+an ordinary function). A lowercase `$foo` in jx is analogous to an
+uppercase `<Foo>` in JSX (not counting `$jsx.foo` which is `<foo>` in JSX).
+In a plain JSON DSL, `{"foo": 3}` is analogous to `<foo>3</foo>` (or
+more likely, `<foo value={3}/>`) in JSX.
 
-## `@resources/jx`
+`jx-expr` is one such DSL. Instead of `$and` and `$or` it's just `and` and
+`or`.
 
-## `@resources/jx-core`
+It can also use `$value` to break out of the plain JSON DSL and just return a
+value if the plain JSON DSL is recursive.
 
-## `@resources/jx-ref`
+## Components
 
-## `@resources/jx-config`
+### `@resources/jx`
+
+### `@resources/jx-core`
+
+### `@resources/jx-ref`
+
+### `@resources/jx-config`
 
 This provides for building a config store and a secret store. The secret
 store is aware of where within the document it's getting inserted, and can
