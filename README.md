@@ -53,6 +53,21 @@ compiler. This makes it more practical for untrusted input.
 
 ### How will this interoperate with JSX?
 
+A jx function can take any jx value. In JSX there are `props` which includes
+`props.children`. For instance, `<p align="right">1<br/>2</p>` has the props
+`align` and `children`. There are two ways to express this in `jx`. First,
+there is using a JSON object as the value:
+`{"$jsx.p": {"align": "right", "children": ["1", {"$jsx.br": null}, "2"]}}`.
+Second, there is using a JSON array as the value, like [JSONML](http://www.jsonml.org/):
+`{"$jsx.p": [{"align": "right"}, "1", {"$jsx.br": null}, "2"]}`. Because
+this is JSX and not XML, it's flexible on types, so whether the first
+element of the array is attributes or the first child can't be detected
+based on its type, so it must always be given, even if there are no props
+besides children. It can be an empty object (`{}`) or `null` - that is,
+`<p>test</p>` can be written as `{"$jsx.p": [{}, "test"]}` or
+`{"$jsx.p": [null, "test"]}`. This can be verbose so when used frequently,
+such JSX components should be wrapped in a jx function.
+
 The `@resources/jx-jsx` provides a way to build React/JSX elements from jx.
 The tags beginning with capital letters (Components) need to be passed in
 when setting up the jx evaluator. JSX is namespaced, so `<div>` is
@@ -103,13 +118,18 @@ value if the plain JSON DSL is recursive.
 
 ### `@resources/jx-config`
 
-This provides for building a config store and a secret store. The secret
-store is aware of where within the document it's getting inserted, and can
-access the rest of the document, and each secret can have restrictions on
-it based on that. For instance, in a document that describes an HTTP
+This provides for building a config store and a secret store.
+
+The config store is similar to `$ref`, except the data exists outside of the
+document.
+
+The secret store is aware of where within the document it's getting inserted,
+and can access the rest of the document, and each secret can have restrictions
+on it based on that. For instance, in a document that describes an HTTP
 request, the secret should only be allowed in the `Authorization` header,
-and only when the URL is . Secrets are added last, so . The config store settings are added first,
-like `$ref` objects.
+and only when the URL goes with the secret, so the input can't send it to
+httpbin and get back the `Authorization` header. Secrets are added last,
+so they can't be copied around with functiosn like `$ref`.
 
 ## `@resources/jx-jsx`
 
